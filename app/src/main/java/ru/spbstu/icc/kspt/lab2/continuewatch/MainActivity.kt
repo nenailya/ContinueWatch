@@ -10,13 +10,13 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
-    val executor: ExecutorService = Executors.newSingleThreadExecutor()
     private val LOG_TAG = "myLogs"
     private val SECONDS_ELAPSED = "Seconds elapsed"
     var secondsElapsed: Int = 0
     lateinit var textSecondsElapsed: TextView
     private var onTheScreen = true
     lateinit var sharedPref: SharedPreferences
+    private val executor = (application as MyApplication).executor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
