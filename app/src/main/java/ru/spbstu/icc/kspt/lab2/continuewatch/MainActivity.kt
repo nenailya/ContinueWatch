@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import ru.spbstu.icc.kspt.lab2.continuewatch.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     val LOG_TAG = "myLogs"
@@ -15,21 +16,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        textSecondsElapsed = findViewById(R.id.textSecondsElapsed)
-        textSecondsElapsed.text = "Seconds elapsed: " + secondsElapsed
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        textSecondsElapsed = binding.textSecondsElapsed
+        setContentView(binding.root)
         Log.d(LOG_TAG, "onCreate")
     }
 
-    override fun onStop() {
-        backgroundThread.interrupt()
-        super.onStop()
-        onTheScreen = false
-        Log.d(LOG_TAG, "onStop")
-    }
-
     override fun onStart() {
-        onTheScreen = true
         backgroundThread = Thread {
             try {
                 while (!Thread.currentThread().isInterrupted) {
@@ -50,21 +43,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        super.onPause()
+        backgroundThread.interrupt()
         onTheScreen = false
+        super.onPause()
         Log.d(LOG_TAG, "onPause")
     }
 
+    override fun onStop() {
+        backgroundThread.interrupt()
+        super.onStop()
+        onTheScreen = false
+        Log.d(LOG_TAG, "onStop")
+    }
     override fun onResume() {
         super.onResume()
         onTheScreen = true
         Log.d(LOG_TAG, "onResume")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        backgroundThread.interrupt()
-        Log.d(LOG_TAG, "onDestroy")
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -84,4 +78,5 @@ class MainActivity : AppCompatActivity() {
         Log.d(LOG_TAG, "onRestoreInstanceState")
     }
 }
+
 
