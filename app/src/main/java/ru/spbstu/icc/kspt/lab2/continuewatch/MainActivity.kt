@@ -11,39 +11,41 @@ class MainActivity : AppCompatActivity() {
     var secondsElapsed: Int = 0
     lateinit var textSecondsElapsed: TextView
     private var onTheScreen = true
-
-    var backgroundThread = Thread {
-        try {
-            while (true) {
-                Thread.sleep(1000)
-                if (onTheScreen) {
-                    textSecondsElapsed.post {
-                        textSecondsElapsed.setText("Seconds elapsed: " + secondsElapsed++)
-                    }
-                }
-            }
-        } catch (ex: InterruptedException) {
-        }
-    }
+    lateinit var backgroundThread: Thread
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         textSecondsElapsed = findViewById(R.id.textSecondsElapsed)
-        textSecondsElapsed.setText("Seconds elapsed: " + secondsElapsed)
-        backgroundThread.start()
+        textSecondsElapsed.text = "Seconds elapsed: " + secondsElapsed
         Log.d(LOG_TAG, "onCreate")
     }
 
     override fun onStop() {
+        backgroundThread.interrupt()
         super.onStop()
         onTheScreen = false
         Log.d(LOG_TAG, "onStop")
     }
 
     override fun onStart() {
-        super.onStart()
         onTheScreen = true
+        backgroundThread = Thread {
+            try {
+                while (!Thread.currentThread().isInterrupted) {
+                    Thread.sleep(1000)
+                    Log.d(LOG_TAG, "${Thread.currentThread()}")
+                    if (onTheScreen) {
+                        textSecondsElapsed.post {
+                            textSecondsElapsed.text = "Seconds elapsed: " + secondsElapsed++
+                        }
+                    }
+                }
+            } catch (ex: InterruptedException) {
+            }
+        }
+        backgroundThread.start()
+        super.onStart()
         Log.d(LOG_TAG, "onStart")
     }
 
@@ -67,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.run {
-            putInt(SECONDS_ELAPSED,secondsElapsed)
+            putInt(SECONDS_ELAPSED, secondsElapsed)
         }
         Log.d(LOG_TAG, "onSaveInstanceState")
         super.onSaveInstanceState(outState)
@@ -77,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         savedInstanceState.run {
             secondsElapsed = getInt(SECONDS_ELAPSED)
-            textSecondsElapsed.setText("Seconds elapsed: " + secondsElapsed)
+            textSecondsElapsed.text = "Seconds elapsed: " + secondsElapsed
         }
         Log.d(LOG_TAG, "onRestoreInstanceState")
     }
