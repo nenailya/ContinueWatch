@@ -8,25 +8,24 @@ import ru.spbstu.icc.kspt.lab2.continuewatch.databinding.ActivityMainBinding
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-private lateinit var executor: ExecutorService
 
 class MainActivity : AppCompatActivity() {
+    private val executor: ExecutorService = Executors.newSingleThreadExecutor()
+
     private val LOG_TAG = "myLogs"
     private val SECONDS_ELAPSED = "Seconds elapsed"
     lateinit var textSecondsElapsed: TextView
-    var secondsElapsed: Int = 0
     private var onTheScreen = true
+    var secondsElapsed: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         textSecondsElapsed = binding.textSecondsElapsed
         setContentView(binding.root)
-        Log.d(LOG_TAG, "onCreate")
     }
 
     override fun onStart() {
-        executor = Executors.newSingleThreadExecutor()
         executor.execute {
             while (!executor.isShutdown) {
                 if (onTheScreen) {
@@ -43,19 +42,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        executor.shutdown()
         onTheScreen = false
         super.onPause()
         Log.d(LOG_TAG, "onPause")
     }
 
     override fun onStop() {
-        executor.shutdown()
         super.onStop()
         onTheScreen = false
-
         Log.d(LOG_TAG, "onStop")
     }
+
     override fun onResume() {
         super.onResume()
         onTheScreen = true
@@ -74,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         savedInstanceState.run {
             secondsElapsed = getInt(SECONDS_ELAPSED)
-            textSecondsElapsed.text = "Seconds elapsed: " + secondsElapsed
+            textSecondsElapsed.text = "Seconds elapsed: $secondsElapsed"
         }
         Log.d(LOG_TAG, "onRestoreInstanceState")
     }
