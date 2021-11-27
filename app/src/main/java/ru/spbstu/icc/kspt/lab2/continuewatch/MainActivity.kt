@@ -59,6 +59,11 @@ class MainActivity : AppCompatActivity() {
         Log.d(LOG_TAG, "onResume")
     }
 
+    override fun onDestroy() {
+        Log.d(LOG_TAG, "onDestroy")
+        super.onDestroy()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         outState.run {
             putInt(SECONDS_ELAPSED, secondsElapsed)
