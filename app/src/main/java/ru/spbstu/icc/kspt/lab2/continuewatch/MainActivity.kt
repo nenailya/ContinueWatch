@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         savedInstanceState.run {
             secondsElapsed = getInt(SECONDS_ELAPSED)
-            textSecondsElapsed.text = "Seconds elapsed: " + secondsElapsed
+            textSecondsElapsed.text = "Seconds elapsed: $secondsElapsed"
         }
         Log.d(LOG_TAG, "onRestoreInstanceState")
     }
