@@ -35,18 +35,13 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             } catch (ex: InterruptedException) {
+                Thread.currentThread().interrupt()
             }
         }
+        onTheScreen = true
         backgroundThread.start()
         super.onStart()
         Log.d(LOG_TAG, "onStart")
-    }
-
-    override fun onPause() {
-        backgroundThread.interrupt()
-        onTheScreen = false
-        super.onPause()
-        Log.d(LOG_TAG, "onPause")
     }
 
     override fun onStop() {
@@ -55,11 +50,7 @@ class MainActivity : AppCompatActivity() {
         onTheScreen = false
         Log.d(LOG_TAG, "onStop")
     }
-    override fun onResume() {
-        super.onResume()
-        onTheScreen = true
-        Log.d(LOG_TAG, "onResume")
-    }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.run {
