@@ -58,17 +58,6 @@ class MainActivity_2 : AppCompatActivity() {
         Log.d(LOG_TAG, "onStart")
     }
 
-    override fun onPause() {
-        super.onPause()
-        onTheScreen = false
-        Log.d(LOG_TAG, "onPause")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        onTheScreen = true
-        Log.d(LOG_TAG, "onResume")
-    }
 
     override fun onDestroy() {
         super.onDestroy()
