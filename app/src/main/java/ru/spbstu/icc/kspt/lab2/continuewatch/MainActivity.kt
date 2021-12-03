@@ -9,7 +9,9 @@ import ru.spbstu.icc.kspt.lab2.continuewatch.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     val LOG_TAG = "myLogs"
     private val SECONDS_ELAPSED = "Seconds elapsed"
-    var secondsElapsed: Int = 0
+    var secondsElapsed: Long = 0
+    var time: Long = 0
+    var time2: Long = 0
     lateinit var textSecondsElapsed: TextView
     private var onTheScreen = true
     lateinit var backgroundThread: Thread
@@ -26,11 +28,14 @@ class MainActivity : AppCompatActivity() {
         backgroundThread = Thread {
             try {
                 while (!Thread.currentThread().isInterrupted) {
+                    time = System.currentTimeMillis()
                     Thread.sleep(1000)
                     Log.d(LOG_TAG, "${Thread.currentThread()}")
                     if (onTheScreen) {
+                        time2 = System.currentTimeMillis()
+                        secondsElapsed += time2 - time
                         textSecondsElapsed.post {
-                            textSecondsElapsed.text = "Seconds elapsed: " + secondsElapsed++
+                            textSecondsElapsed.text = "${secondsElapsed/1000}"
                         }
                     }
                 }
@@ -54,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.run {
-            putInt(SECONDS_ELAPSED, secondsElapsed)
+            putLong(SECONDS_ELAPSED, secondsElapsed)
         }
         Log.d(LOG_TAG, "onSaveInstanceState")
         super.onSaveInstanceState(outState)
@@ -63,8 +68,8 @@ class MainActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         savedInstanceState.run {
-            secondsElapsed = getInt(SECONDS_ELAPSED)
-            textSecondsElapsed.text = "Seconds elapsed: $secondsElapsed"
+            secondsElapsed = getLong(SECONDS_ELAPSED)
+            textSecondsElapsed.text = "$secondsElapsed"
         }
         Log.d(LOG_TAG, "onRestoreInstanceState")
     }

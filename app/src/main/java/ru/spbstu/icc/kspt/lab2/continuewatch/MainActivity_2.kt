@@ -21,7 +21,7 @@ class MainActivity_2 : AppCompatActivity() {
                 Thread.sleep(1000)
                 if (onTheScreen) {
                     textSecondsElapsed.post {
-                        textSecondsElapsed.setText("Seconds elapsed: " + secondsElapsed++)
+                        textSecondsElapsed.text = "${secondsElapsed++}"
                     }
                 }
             }
@@ -36,7 +36,7 @@ class MainActivity_2 : AppCompatActivity() {
             "Seconds elapsed: " + secondsElapsed++, Context.MODE_PRIVATE)
         textSecondsElapsed = findViewById(R.id.textSecondsElapsed)
         secondsElapsed = sharedPref.getInt(SECONDS_ELAPSED, 0)
-        textSecondsElapsed.setText("Seconds elapsed: " + secondsElapsed)
+        textSecondsElapsed.text = "$secondsElapsed"
         backgroundThread.start()
         Log.d(LOG_TAG, "onCreate")
     }
