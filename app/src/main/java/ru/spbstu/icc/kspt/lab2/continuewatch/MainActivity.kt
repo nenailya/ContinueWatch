@@ -33,11 +33,27 @@ class MainActivity : AppCompatActivity() {
         onTheScreen = false
         Log.d(LOG_TAG, "onStop")
     }
+    override fun onPause() {
+        onTheScreen = false
+        super.onPause()
+        Log.d(LOG_TAG, "onPause")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        onTheScreen = true
+        Log.d(LOG_TAG, "onResume")
+    }
 
     override fun onStart() {
         super.onStart()
         onTheScreen = true
         Log.d(LOG_TAG, "onStart")
+    }
+
+    override fun onDestroy() {
+        Log.d(LOG_TAG, "onDestroy")
+        super.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
