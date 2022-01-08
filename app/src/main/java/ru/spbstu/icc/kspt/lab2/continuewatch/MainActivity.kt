@@ -6,17 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import ru.spbstu.icc.kspt.lab2.continuewatch.databinding.ActivityMainBinding
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-
+import java.util.concurrent.Future
 
 class MainActivity : AppCompatActivity() {
-    private val executor: ExecutorService = Executors.newSingleThreadExecutor()
-
+    private lateinit var future: Future<*>
     private val LOG_TAG = "myLogs"
     private val SECONDS_ELAPSED = "Seconds elapsed"
-    lateinit var textSecondsElapsed: TextView
-    private var onTheScreen = true
-    var secondsElapsed: Int = 0
+    private lateinit var textSecondsElapsed: TextView
+    private var secondsElapsed: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,42 +23,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
-        executor.execute {
-            while (!executor.isShutdown) {
-                if (onTheScreen) {
-                    Thread.sleep(1000)
-                    Log.d(LOG_TAG, "${Thread.currentThread()}")
-                    textSecondsElapsed.post {
-                        textSecondsElapsed.text = "Seconds elapsed: " + secondsElapsed++
-                    }
-                }
-            }
-        }
+        future = background(App.executor)
         Log.d(LOG_TAG, "onStart")
         super.onStart()
     }
 
-    override fun onPause() {
-        onTheScreen = false
-        super.onPause()
-        Log.d(LOG_TAG, "onPause")
-    }
-
     override fun onStop() {
+        future.cancel(true)
         super.onStop()
-        onTheScreen = false
-        Log.d(LOG_TAG, "onStop")
     }
 
-    override fun onResume() {
-        super.onResume()
-        onTheScreen = true
-        Log.d(LOG_TAG, "onResume")
-    }
-
-    override fun onDestroy() {
-        Log.d(LOG_TAG, "onDestroy")
-        super.onDestroy()
+    private fun background(executorService: ExecutorService) = executorService.submit {
+        while (true) {
+            Thread.sleep(1000)
+            Log.d(LOG_TAG, "${Thread.currentThread()}")
+            textSecondsElapsed.post {
+                textSecondsElapsed.text = "${secondsElapsed++}"
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -76,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         savedInstanceState.run {
             secondsElapsed = getInt(SECONDS_ELAPSED)
-            textSecondsElapsed.text = "Seconds elapsed: $secondsElapsed"
+            textSecondsElapsed.text = "$secondsElapsed"
         }
         Log.d(LOG_TAG, "onRestoreInstanceState")
     }
