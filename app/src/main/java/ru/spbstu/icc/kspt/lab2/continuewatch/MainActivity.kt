@@ -13,7 +13,6 @@ class MainActivity : AppCompatActivity() {
     var time: Long = 0
     var time2: Long = 0
     lateinit var textSecondsElapsed: TextView
-    private var onTheScreen = true
     lateinit var backgroundThread: Thread
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,19 +30,18 @@ class MainActivity : AppCompatActivity() {
                     time = System.currentTimeMillis()
                     Thread.sleep(1000)
                     Log.d(LOG_TAG, "${Thread.currentThread()}")
-                    if (onTheScreen) {
+
                         time2 = System.currentTimeMillis()
                         secondsElapsed += time2 - time
                         textSecondsElapsed.post {
                             textSecondsElapsed.text = "${secondsElapsed/1000}"
                         }
-                    }
+
                 }
             } catch (ex: InterruptedException) {
                 Thread.currentThread().interrupt()
             }
         }
-        onTheScreen = true
         backgroundThread.start()
         super.onStart()
         Log.d(LOG_TAG, "onStart")
@@ -52,7 +50,6 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         backgroundThread.interrupt()
         super.onStop()
-        onTheScreen = false
         Log.d(LOG_TAG, "onStop")
     }
 
