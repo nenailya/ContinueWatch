@@ -31,11 +31,11 @@ class MainActivity : AppCompatActivity() {
                     Thread.sleep(1000)
                     Log.d(LOG_TAG, "${Thread.currentThread()}")
 
-                        time2 = System.currentTimeMillis()
-                        secondsElapsed += time2 - time
-                        textSecondsElapsed.post {
-                            textSecondsElapsed.text = "${secondsElapsed/1000}"
-                        }
+                    time2 = System.currentTimeMillis()
+                    secondsElapsed += time2 - time
+                    textSecondsElapsed.post {
+                        textSecondsElapsed.text = "${secondsElapsed / 1000}"
+                    }
 
                 }
             } catch (ex: InterruptedException) {
@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
         Log.d(LOG_TAG, "onStop")
     }
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.run {
